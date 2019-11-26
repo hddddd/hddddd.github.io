@@ -47,14 +47,14 @@
   };
 </script>
 
-  <meta name="description" content="Linux中将本地文件上传到服务器将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz">
+  <meta name="description" content="Linux中将本地文件上传到服务器将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz  2、文件上传下载 下载命令 1scp username@serverIp:&#x2F;path&#x2F;filename ~&#x2F;local_dir  上传命令">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux中将本地文件上传到服务器">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;Linux%E4%B8%AD%E5%B0%86%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8&#x2F;index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Linux中将本地文件上传到服务器将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz">
+<meta property="og:description" content="Linux中将本地文件上传到服务器将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz  2、文件上传下载 下载命令 1scp username@serverIp:&#x2F;path&#x2F;filename ~&#x2F;local_dir  上传命令">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-11-26T13:13:26.393Z">
+<meta property="og:updated_time" content="2019-11-26T13:15:53.417Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2019/11/26/Linux%E4%B8%AD%E5%B0%86%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/">
@@ -194,7 +194,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2019-11-26 21:12:01 / Modified: 21:13:26" itemprop="dateCreated datePublished" datetime="2019-11-26T21:12:01+08:00">2019-11-26</time>
+              <time title="Created: 2019-11-26 21:12:01 / Modified: 21:15:53" itemprop="dateCreated datePublished" datetime="2019-11-26T21:12:01+08:00">2019-11-26</time>
             </span>
 
           
@@ -215,6 +215,13 @@
 
 <p>解压文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar zxvf test.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>2、文件上传下载</p>
+<p>下载命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp username@serverIp:/path/filename ~/local_dir</span><br></pre></td></tr></table></figure>
+
+<p>上传命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp /path/filename username@serverIp:/path</span><br></pre></td></tr></table></figure>
 
 
     </div>
