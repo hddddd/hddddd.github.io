@@ -47,17 +47,17 @@
   };
 </script>
 
-  <meta name="description" content="将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz  2、文件上传下载 下载命令 1scp username@serverIp:&#x2F;path&#x2F;filename ~&#x2F;local_dir  上传命令 1scp &#x2F;path&#x2F;fil">
+  <meta name="description" content="##在mac上搭建zsh">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux中将本地文件上传到服务器">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;Linux%E4%B8%AD%E5%B0%86%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8&#x2F;index.html">
+<meta property="og:title" content="zsh初体验">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;16&#x2F;zsh%E5%88%9D%E4%BD%93%E9%AA%8C&#x2F;index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。 1、linux（mac）解压缩文件 tar命令压缩文件 1tar zcvf test.tar.gz  解压文件 1tar zxvf test.tar.gz  2、文件上传下载 下载命令 1scp username@serverIp:&#x2F;path&#x2F;filename ~&#x2F;local_dir  上传命令 1scp &#x2F;path&#x2F;fil">
+<meta property="og:description" content="##在mac上搭建zsh">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-12-01T08:42:34.238Z">
+<meta property="og:updated_time" content="2019-12-16T12:22:25.852Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/26/Linux%E4%B8%AD%E5%B0%86%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+<link rel="canonical" href="http://yoursite.com/2019/12/16/zsh%E5%88%9D%E4%BD%93%E9%AA%8C/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>Linux中将本地文件上传到服务器 | Hexo</title>
+  <title>zsh初体验 | Hexo</title>
   
 
 
@@ -170,7 +170,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/26/Linux%E4%B8%AD%E5%B0%86%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/16/zsh%E5%88%9D%E4%BD%93%E9%AA%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -183,7 +183,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Linux中将本地文件上传到服务器
+          zsh初体验
         </h1>
 
         <div class="post-meta">
@@ -192,16 +192,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2019-11-26 21:12:01" itemprop="dateCreated datePublished" datetime="2019-11-26T21:12:01+08:00">2019-11-26</time>
+              <time title="Created: 2019-12-16 20:19:50 / Modified: 20:22:25" itemprop="dateCreated datePublished" datetime="2019-12-16T20:19:50+08:00">2019-12-16</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-01 16:42:34" itemprop="dateModified" datetime="2019-12-01T16:42:34+08:00">2019-12-01</time>
-              </span>
 
           
 
@@ -214,23 +208,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <a id="more"></a>
-
-<p>将文件上传至linux服务器通常需要将文件打包，然后再上传至服务器。</p>
-<p>1、linux（mac）解压缩文件</p>
-<p>tar命令压缩文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar zcvf test.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>解压文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar zxvf test.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>2、文件上传下载</p>
-<p>下载命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp username@serverIp:/path/filename ~/local_dir</span><br></pre></td></tr></table></figure>
-
-<p>上传命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp /path/filename username@serverIp:/path</span><br></pre></td></tr></table></figure>
-
+        <p>##在mac上搭建zsh</p>
 
     </div>
 
@@ -246,12 +224,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/11/25/%E5%88%A9%E7%94%A8DRF%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD/" rel="prev" title="利用DRF实现文件上传下载">
-      <i class="fa fa-chevron-left"></i> 利用DRF实现文件上传下载
+    <a href="/2019/11/28/%E5%88%A9%E7%94%A8hexo+gitlab%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="利用hexo+gitlab搭建个人博客">
+      <i class="fa fa-chevron-left"></i> 利用hexo+gitlab搭建个人博客
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/11/28/%E5%88%A9%E7%94%A8hexo+gitlab%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="next" title="利用hexo+gitlab搭建个人博客">
-      利用hexo+gitlab搭建个人博客 <i class="fa fa-chevron-right"></i>
+    <a href="/2019/12/19/TEE%E4%B8%8EREE%E6%B5%85%E6%9E%90/" rel="next" title="TEE与REE浅析">
+      TEE与REE浅析 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

@@ -167,6 +167,135 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/19/TEE%E4%B8%8EREE%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/19/TEE%E4%B8%8EREE%E6%B5%85%E6%9E%90/" class="post-title-link" itemprop="url">TEE与REE浅析</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-19 22:11:35" itemprop="dateCreated datePublished" datetime="2019-12-19T22:11:35+08:00">2019-12-19</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>##TEE与REE浅析</p>
+<p>TEE 可信执行环境 该环境可以保证稳定的计算 而不被常规的操作系统所干扰，因此称之为”可信” 这是通过创建一个独立运行的 小型操作系统来实现的，这个操作系统能在TrustZone的安全世界中独立运行。</p>
+<p> TEE常用于执行关键的操作：</p>
+<p>1、移动支付：指纹验证，PIN码输入等</p>
+<p>2、机密数据：私钥、证书等的安全存储</p>
+<p>3、内容包括；DRM（数字版权保护）</p>
+<h3 id="TEE已经成为生物设备识别的标配"><a href="#TEE已经成为生物设备识别的标配" class="headerlink" title="TEE已经成为生物设备识别的标配"></a>TEE已经成为生物设备识别的标配</h3><p>使用TEE来隔离指纹的采集、存储、验证的过程 即使手机被越狱或者ROOT 攻击者也无法获取指纹数据</p>
+<p>TEE内部运行一个完整的操作系统，与REE（如Android）隔离运行，TEE与REE通过共享内存进行交互</p>
+<p>TEE内部也分为内核态和用户态，TEE的用户态可以运行多个不同的安全应用（TA）Trusted Application</p>
+<p>TEE包含：Secure SO+中间态+安全应用+外部交互</p>
+<p>TEE三层架构：TA层：可信钱包、TUI；</p>
+<p>​                          TEE层：安全操作系统，对上层TA提供的库</p>
+<p>​                          硬件层：CPU状态隔离、内存隔离、外设隔离</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/16/zsh%E5%88%9D%E4%BD%93%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/16/zsh%E5%88%9D%E4%BD%93%E9%AA%8C/" class="post-title-link" itemprop="url">zsh初体验</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-16 20:19:50 / Modified: 20:22:25" itemprop="dateCreated datePublished" datetime="2019-12-16T20:19:50+08:00">2019-12-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>##在mac上搭建zsh</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/28/%E5%88%A9%E7%94%A8hexo+gitlab%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -249,10 +378,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-11-26 21:12:01 / Modified: 21:26:28" itemprop="dateCreated datePublished" datetime="2019-11-26T21:12:01+08:00">2019-11-26</time>
+              <time title="Created: 2019-11-26 21:12:01" itemprop="dateCreated datePublished" datetime="2019-11-26T21:12:01+08:00">2019-11-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-01 16:42:34" itemprop="dateModified" datetime="2019-12-01T16:42:34+08:00">2019-12-01</time>
+              </span>
 
           
 
@@ -332,7 +467,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-26 19:39:50" itemprop="dateModified" datetime="2019-11-26T19:39:50+08:00">2019-11-26</time>
+                <time title="Modified: 2019-12-16 20:18:04" itemprop="dateModified" datetime="2019-12-16T20:18:04+08:00">2019-12-16</time>
               </span>
 
           
@@ -415,7 +550,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
