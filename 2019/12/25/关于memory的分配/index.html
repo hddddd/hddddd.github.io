@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Muse',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="关于memory的分配  TEE-visor是我们系统的TCB。 它可以访问所有物理内存。 启动后，TEE-visor将识别并管理每个内存使用权限，以进行进一步的内存管理。 故在REE与TEE交互时，内存应属于secure-world中的TEE-visor来管理分配，vTEE和REE需要交换数据，则它们必须在TEE-visor的帮助下建立安全的沟通渠道。发起方将请求发送给TEE-visor，其中包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于memory的分配">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;25&#x2F;%E5%85%B3%E4%BA%8Ememory%E7%9A%84%E5%88%86%E9%85%8D&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="关于memory的分配  TEE-visor是我们系统的TCB。 它可以访问所有物理内存。 启动后，TEE-visor将识别并管理每个内存使用权限，以进行进一步的内存管理。 故在REE与TEE交互时，内存应属于secure-world中的TEE-visor来管理分配，vTEE和REE需要交换数据，则它们必须在TEE-visor的帮助下建立安全的沟通渠道。发起方将请求发送给TEE-visor，其中包">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;Users&#x2F;Owen-DBB&#x2F;Library&#x2F;Application%20Support&#x2F;typora-user-images&#x2F;image-20191220193834950.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;Users&#x2F;Owen-DBB&#x2F;Library&#x2F;Application%20Support&#x2F;typora-user-images&#x2F;image-20191225215034672.png">
+<meta property="og:updated_time" content="2019-12-26T02:15:21.275Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;Users&#x2F;Owen-DBB&#x2F;Library&#x2F;Application%20Support&#x2F;typora-user-images&#x2F;image-20191220193834950.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/12/25/%E5%85%B3%E4%BA%8Ememory%E7%9A%84%E5%88%86%E9%85%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>关于memory的分配 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/25/%E5%85%B3%E4%BA%8Ememory%E7%9A%84%E5%88%86%E9%85%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于memory的分配
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-12-25 21:45:52" itemprop="dateCreated datePublished" datetime="2019-12-25T21:45:52+08:00">2019-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-26 10:15:21" itemprop="dateModified" datetime="2019-12-26T10:15:21+08:00">2019-12-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="关于memory的分配"><a href="#关于memory的分配" class="headerlink" title="关于memory的分配"></a>关于memory的分配</h1><img src="/Users/Owen-DBB/Library/Application Support/typora-user-images/image-20191220193834950.png" alt="image-20191220193834950" style="zoom:50%;" />
+
+<p>TEE-visor是我们系统的TCB。 它可以访问所有物理内存。 启动后，TEE-visor将识别并管理每个内存使用权限，以进行进一步的内存管理。 故在REE与TEE交互时，内存应属于secure-world中的TEE-visor来管理分配，vTEE和REE需要交换数据，则它们必须在TEE-visor的帮助下建立安全的沟通渠道。发起方将请求发送给TEE-visor，其中包含两种环境的身份以及用于共享的预分配内存页。 TEE-visor首先对两个环境进行身份验证，然后将页面映射为两个环境共享。</p>
+<p>TEE-visor将每个vTEE限制为其自己的内存视图（即整个内存的局部视图）。 具体来说，vTEE只能访问其自己的数据和代码。 如果没有显式身份验证，它就无法访问分配给其他vTEE实例或REE或TEE-visor的内存空间。 图3分别显示了vTEE，TEE-visor和REE的内存视图。 此设计可确保vTEE不具有比REE更高的特权，从而在vTEE和REE之间建立相互不信任的连接。    </p>
+<h1 id="关于Gate的作用"><a href="#关于Gate的作用" class="headerlink" title="关于Gate的作用"></a>关于Gate的作用</h1><p>vTEE可以通过gate呼叫TEE-visor提供的服务。 gate用于在TEE visor和vTEE之间切换执行。 这是一段代码，映射到TEE-visor和所有vTEE实例的同一地址。 任何vTEE或TEE-visor都可以通过相同的代码发出上下文切换。</p>
+<p><strong>Gate</strong>控制vTEE和TEE-visor之间的切换过程。 它旨在实现以下目标。 首先，<strong>该网关应该是上下文切换的唯一入口点，并且不能被绕过</strong>。 其次，切换过程应该是atomic的，以避免部分执行或快捷方式。 第三，应确保门的完整性。 我们在清单1中列出了gate代码的关键部分。</p>
+<img src="/Users/Owen-DBB/Library/Application Support/typora-user-images/image-20191225215034672.png" alt="image-20191225215034672" style="zoom:50%;" />
+
+<p>为了统一gate入口，在禁用中断的情况下，通过SMC指令调用在监视模式下执行门代码。 门代码使用的数据（例如，第14行和第28行中的teevisor_pt）被映射为所有vTEE实例的只读，以避免vTEE直接篡改TEE-visor的页表指针。 从TEE-visor到vTEE的gate出口例程与gate入口代码相似。</p>
+<p>潜在的vTEE可能会尝试通过两种方式攻击gate：中断gate的执行以污染通用寄存器值，或者跳转到门的中间。 我们将在下面描述如何防御这些攻击。 请注意，进入TEE-visor后，将进一步检查vTEE TTBR寄存器值（第2至12行）的完整性。</p>
+<h1 id="安全性分析"><a href="#安全性分析" class="headerlink" title="安全性分析"></a>安全性分析</h1><blockquote>
+<p>防御现有攻击</p>
+</blockquote>
+<p>我们展示了我们的系统如何防御现有攻击TEE。 由于大多数TEE实现不是开源的，尤其是那些具有许多CVE的实现，因此我们无法在真实设备上进行评估。 但是，由于我们的系统预期通过设计是安全的，因此我们认为这种分析可以反映出我们设计的有效性。 我们选择以下具有充分细节的CVE供我们分析。</p>
+<p>CVE-2016-5349：根据[44]，三个TA允许不安全世界中的恶意应用程序从不安全世界中的任意地址读取任何内存，包括所有其他应用程序和内核的内存。通过使用我们的系统，TEE实例将被限制为仅访问其自己的内存以及与其显式共享的内存。因此，攻击将被击败。<br>CVE-2016-8762 / 8763/8764：据[44]所述，TrustZone驱动程序的用户输入验证机制有缺陷，攻击者可以利用它在REE的任何地址上定位任意读取和写入功能。然后，攻击者可以获得REE的root特权，并且可以进行进一步的攻击以在TEE中执行代码。尽管本文没有第二步的详细信息（TEE代码执行），但我们可以知道，使用我们的系统，攻击者将在第一步失败，并且无法通过发送超范围数据来读取/写入REE的数据TEE服务的指针。<br>CVE-2016-0825：此攻击是通过利用Widevine TA的漏洞来完成的。一旦受到威胁，攻击者将通过TA将请求发送到TEE内核，以泄漏存储在TEE安全存储中的数据。由于安全存储由TEE中的所有TA使用，因此这种泄漏也将影响其他TA的安全性，即所谓的“命运共享”。通过使用我们的系统，关键TA可以拥有自己的TEE<br>专用的安全存储以避免此类泄漏。</p>
+<blockquote>
+<p>隔离执行</p>
+</blockquote>
+<p>VTEE和REE之间以及不同vTEE之间的隔离是由TEE-visor对MMU的独家控制来实施的。<br><strong>vTEE模拟</strong>：如果某个应用程序正在与vTEE-A交互，则需要将vTEE-A的ID发送到TEE-visor以建立通信通道。但是，在我们的威胁模型之内，攻击者可能会将ID（在不受信任的正常世界中）更改为某些已经受到威胁的vTEE实例vTEE-E，以模拟vTEE-A并重定向所有通信。这种攻击只能攻击应用程序（在正常情况下不受保护），而不会导致vTEE-A中的秘密数据泄漏。</p>
+<p><strong>受损的vTEE</strong>：受损的vTEE可能会尝试通过注入特权指令来破坏TEE-visor的隔离。由于TEE-visor控制着所有vTEE实例内存的访问权限，因此它可以防止试图将未经验证的代码注入内核模式以破坏隔离的攻击。请注意，当前所有TEE产品都不支持动态内核代码生成，因此在这种情况下，TEE-visor可以轻松保证兼容性。</p>
+<p><strong>DMA攻击</strong>：某些特定的硬件外围设备能够在许多平台上的安全内存中执行直接内存访问（DMA）。受损的vTEE可能会利用此功能来读取或写入任意安全内存，并威胁到TEEv的隔离实施。为了避免这种攻击，TEE-visor将限制对安全DMA控制器的任何直接操作。而是，TEE-visor仅允许安全DMA控制器使用前/后驱动器模式，并将仔细验证安全DMA请求是否不违反TEE-visor的隔离方案。</p>
+<p><strong>侧信道攻击</strong>：与其他基于TrustZone的安全系统一样，TEEv可能容易受到侧信道攻击。 ARM中的SMC指令可以使信道同步，从而使跨越正常和安全世界过渡的投机执行攻击变得不可能。但是，过早的vTEE内部的潜在恶意TA可能会向其他TA及其vTEE发起投机执行攻击。当前，TEEv无法阻止vTEE内部的这些攻击。此外，处于vTEE模式的设备状态未通过直通模式正确重置可能会将私有设备数据泄漏给其他vTEE。但是，这些攻击的影响仅限于在不更改操作或破坏TEEv隔离的情况下泄漏信息。</p>
+<blockquote>
+<p>关于可信度的讨论</p>
+</blockquote>
+<p><strong>传统上，只有一个TEE会受到默认值的信任</strong>。现在，我们有多个vTEE实例，需要考虑它们之间的关系。引入了系统vTEE，主要用于托管各种设备驱动程序。第三方vTEE不应依赖系统vTEE的信任。但是，如果为指纹验证选择了I / O委托模式，则受感染的系统vTEE可能将错误结果返回给其他vTEE。在这种情况下，一种更安全的方法是使用直通模式，以便完全绕开system-vTEE。但是，第三方TEE应该能够直接控制指纹读取器，这是不平凡的。更好的方法是最小化system-vTEE，使其仅作为主机设备驱动程序。例如，电话供应商可以预安装两个vTEE：系统vTEE和ta-vTEE。后者用于安装新的TA。在这种情况下，系统vTEE的攻击面很窄。<br>相反，电话供应商也不信任第三方vTEE实例。它不应将用户的敏感信息（例如指纹模板）发送到不受信任的vTEE，因为大多数电话供应商都承诺将用户的身份信息保留在电话内，并且第三方vTEE可能会将这些信息上传到某个云中。我们的设计可以支持vTEE之间的完全隔离，因此这被视为一个策略问题，而不是机制一。<br>TEEv依靠系统vTEE提供系统范围的服务，可以利用该服务来发动混乱的副攻击。 TEEv通过提供受限和固定的服务并显式配置共享内存访问来缓解此问题。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/19/TEE%E4%B8%8EREE%E6%B5%85%E6%9E%90/" rel="prev" title="TEE与REE浅析">
+      <i class="fa fa-chevron-left"></i> TEE与REE浅析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#关于memory的分配"><span class="nav-number">1.</span> <span class="nav-text">关于memory的分配</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于Gate的作用"><span class="nav-number">2.</span> <span class="nav-text">关于Gate的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全性分析"><span class="nav-number">3.</span> <span class="nav-text">安全性分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">3.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.5.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
